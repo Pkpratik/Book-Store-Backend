@@ -20,6 +20,4 @@ app.use("/graphql", graphqlHTTP({ schema, graphiql: true }));
 const port = process.env.PORT || 8000
 
 // Strating Server
-app.listen(port , ()=>{
-    console.log(`app is running at ${port}`)
-})
+app.listen(port)
