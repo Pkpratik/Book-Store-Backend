@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const graphql = require("graphql");
 const Book = require("./models/book");
-const Author = require("./models/Author");
+const Author = require("./models/author");
 
 const {
   GraphQLID,
