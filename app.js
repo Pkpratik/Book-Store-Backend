@@ -17,9 +17,9 @@ mongoose.connection.once("open", () => {
 
 app.use("/graphql", graphqlHTTP({ schema, graphiql: true }));
 
-let port= process.env.PORT || 4000;
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+const port = process.env.PORT || 8000
 
-// app.listen(process.env.PORT || 4000, () => {
-//   console.log("now listning at 4000");
-// });
+// Strating Server
+app.listen(port , ()=>{
+    console.log(`app is running at ${port}`)
+})
