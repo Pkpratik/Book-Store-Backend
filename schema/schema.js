@@ -18,10 +18,9 @@ const BookType = new GraphQLObjectType({
   name: "Book",
   fields: () => ({
     id: { type: GraphQLID },
-
     name: { type: GraphQLString },
     rating: { type: GraphQLFloat },
-    genre: { type: new GraphQLList(GraphQLString) },
+    genre: { type: GraphQLString },
     image: { type: GraphQLString },
     description: { type: GraphQLString },
     author: {
@@ -3432,7 +3431,42 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(BookType),
       args: { genre: { type: GraphQLString } },
       resolve(parent, args) {
-        return Book.find({ genre: args.genre });
+        let s = ".*"+args.genre+".*";
+        return Book.find({ genre:{
+
+
+          $regex:
+            `${s}`, $options: 'i'
+        } 
+       });
+      },
+    },
+    name: {
+      type: new GraphQLList(BookType),
+      args: { name: { type: GraphQLString } },
+      resolve(parent, args) {
+        let s = ".*"+args.name+".*";
+        return Book.find({ name:{
+
+
+          $regex:
+            `${s}`, $options: 'i'
+        } 
+       });
+      },
+    },
+    description: {
+      type: new GraphQLList(BookType),
+      args: { description: { type: GraphQLString } },
+      resolve(parent, args) {
+        let s = ".*"+args.description+".*";
+        return Book.find({ description:{
+
+
+          $regex:
+            `${s}`, $options: 'i'
+        } 
+       });
       },
     },
     rating: {
@@ -3466,8 +3500,8 @@ const Mutation = new GraphQLObjectType({
         description: { type: GraphQLString },
         rating: { type: GraphQLNonNull(GraphQLFloat) },
         name: { type: new GraphQLNonNull(GraphQLString) },
-        genre: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
-        author: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+        genre: { type: new GraphQLNonNull(GraphQLString) },
+        author: { type: new GraphQLNonNull(GraphQLString) },
       },
       resolve(parent, args) {
         let book = new Book({
