@@ -17,6 +17,9 @@ mongoose.connection.once("open", () => {
 
 app.use("/graphql", graphqlHTTP({ schema, graphiql: true }));
 
-app.listen(process.env.PORT || 4000, () => {
-  console.log("now listning at 4000");
-});
+let port= process.env.PORT || 4000;
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+// app.listen(process.env.PORT || 4000, () => {
+//   console.log("now listning at 4000");
+// });
