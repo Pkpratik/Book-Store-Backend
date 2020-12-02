@@ -73,7 +73,123 @@ const RootQuery = new GraphQLObjectType({
         return Book.findById(args._id);
       },
     },
-    // insertmanyauthors: {
+    
+
+    author: {
+      type: AuthorType,
+      args: { id: { type: GraphQLID } },
+      resolve(parent, args) {
+        //return _.find(authors, { id: args.id });
+        return Author.findById(args.id);
+      },
+    },
+    books: {
+      type: new GraphQLList(BookType),
+      resolve(parent, args) {
+        //return books;
+        return Book.find({});
+      },
+    },
+    rating: {
+      type: new GraphQLList(BookType),
+      resolve(parent, args) {
+        return Book.aggregate([{ $sort: { rating: -1 } }]);
+      },
+    },
+    description: {
+      type: new GraphQLList(BookType),
+      args: { description: { type: GraphQLString } },
+      resolve(parent, args) {
+        let s = ".*"+args.description+".*";
+        return Book.find({ description:{
+          $regex:
+            `${s}`, $options: 'i'
+        } 
+       });
+      },
+    },
+
+    authors: {
+      type: new GraphQLList(AuthorType),
+      resolve(parent, args) {
+        //return authors;
+        return Author.find({});
+      },
+    },
+    genre: {
+      type: new GraphQLList(BookType),
+      args: { genre: { type: GraphQLString } },
+      resolve(parent, args) {
+        let s = ".*"+args.genre+".*";
+        return Book.find({ genre:{
+          $regex:
+            `${s}`, $options: 'i'
+        } 
+       });
+      },
+    },
+    name: {
+      type: new GraphQLList(BookType),
+      args: { name: { type: GraphQLString } },
+      resolve(parent, args) {
+        let s = ".*"+args.name+".*";
+        return Book.find({ name:{
+          $regex:
+            `${s}`, $options: 'i'
+        } 
+       });
+      },
+    },
+    
+  },
+});
+
+const Mutation = new GraphQLObjectType({
+  name: "Mutation",
+  fields: {
+    addAuthor: {
+      type: AuthorType,
+      args: {
+        name: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve(parent, args) {
+        let author = new Author({
+          name: args.name,
+        });
+        return author.save();
+      },
+    },
+    addBook: {
+      type: BookType,
+      args: {
+        image: { type: GraphQLString },
+        description: { type: GraphQLString },
+        rating: { type: GraphQLNonNull(GraphQLFloat) },
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        genre: { type: new GraphQLNonNull(GraphQLString) },
+        author: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve(parent, args) {
+        let book = new Book({
+          name: args.name,
+          image: args.image,
+          genre: args.genre,
+          rating: args.rating,
+          author: args.author,
+          description: args.description,
+        });
+
+        return book.save();
+      },
+    },
+  },
+});
+
+module.exports = new GraphQLSchema({
+  query: RootQuery,
+  mutation: Mutation,
+});
+// insertmanyauthors: {
     //   type: AuthorType,
     //   resolve(parent, args) {
     //     return Author.insertMany([
@@ -3404,122 +3520,3 @@ const RootQuery = new GraphQLObjectType({
     //     ]);
     //   },
     // },
-
-    author: {
-      type: AuthorType,
-      args: { id: { type: GraphQLID } },
-      resolve(parent, args) {
-        //return _.find(authors, { id: args.id });
-        return Author.findById(args.id);
-      },
-    },
-    books: {
-      type: new GraphQLList(BookType),
-      resolve(parent, args) {
-        //return books;
-        return Book.find({});
-      },
-    },
-    authors: {
-      type: new GraphQLList(AuthorType),
-      resolve(parent, args) {
-        //return authors;
-        return Author.find({});
-      },
-    },
-    genre: {
-      type: new GraphQLList(BookType),
-      args: { genre: { type: GraphQLString } },
-      resolve(parent, args) {
-        let s = ".*"+args.genre+".*";
-        return Book.find({ genre:{
-
-
-          $regex:
-            `${s}`, $options: 'i'
-        } 
-       });
-      },
-    },
-    name: {
-      type: new GraphQLList(BookType),
-      args: { name: { type: GraphQLString } },
-      resolve(parent, args) {
-        let s = ".*"+args.name+".*";
-        return Book.find({ name:{
-
-
-          $regex:
-            `${s}`, $options: 'i'
-        } 
-       });
-      },
-    },
-    description: {
-      type: new GraphQLList(BookType),
-      args: { description: { type: GraphQLString } },
-      resolve(parent, args) {
-        let s = ".*"+args.description+".*";
-        return Book.find({ description:{
-
-
-          $regex:
-            `${s}`, $options: 'i'
-        } 
-       });
-      },
-    },
-    rating: {
-      type: new GraphQLList(BookType),
-      resolve(parent, args) {
-        return Book.aggregate([{ $sort: { rating: -1 } }]);
-      },
-    },
-  },
-});
-
-const Mutation = new GraphQLObjectType({
-  name: "Mutation",
-  fields: {
-    addAuthor: {
-      type: AuthorType,
-      args: {
-        name: { type: new GraphQLNonNull(GraphQLString) },
-      },
-      resolve(parent, args) {
-        let author = new Author({
-          name: args.name,
-        });
-        return author.save();
-      },
-    },
-    addBook: {
-      type: BookType,
-      args: {
-        image: { type: GraphQLString },
-        description: { type: GraphQLString },
-        rating: { type: GraphQLNonNull(GraphQLFloat) },
-        name: { type: new GraphQLNonNull(GraphQLString) },
-        genre: { type: new GraphQLNonNull(GraphQLString) },
-        author: { type: new GraphQLNonNull(GraphQLString) },
-      },
-      resolve(parent, args) {
-        let book = new Book({
-          name: args.name,
-          image: args.image,
-          genre: args.genre,
-          rating: args.rating,
-          author: args.author,
-          description: args.description,
-        });
-
-        return book.save();
-      },
-    },
-  },
-});
-
-module.exports = new GraphQLSchema({
-  query: RootQuery,
-  mutation: Mutation,
-});
