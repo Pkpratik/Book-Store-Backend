@@ -93,7 +93,7 @@ const RootQuery = new GraphQLObjectType({
     rating: {
       type: new GraphQLList(BookType),
       resolve(parent, args) {
-        return Book.aggregate([{ $sort: { rating: -1 } }]);
+        return Book.find({}).sort({ rating:-1});
       },
     },
     description: {
@@ -108,7 +108,18 @@ const RootQuery = new GraphQLObjectType({
        });
       },
     },
-
+    authorbooks:{
+      type:new GraphQLList(BookType),
+      args: { author: { type: GraphQLString } },
+      resolve(parent, args) {
+        let s = ".*"+args.author+".*";
+        return Book.find({ author:{
+          $regex:
+            `${s}`, $options: 'i'
+        } 
+       });
+      },
+    },
     authors: {
       type: new GraphQLList(AuthorType),
       resolve(parent, args) {
