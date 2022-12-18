@@ -7,6 +7,7 @@ const cors = require("cors")
 const app = express();
 app.use(cors());
 
+
 mongoose.connect(
   "mongodb+srv://administrator:administrator@cluster0.gqs94.mongodb.net/readerscorner?retryWrites=true&w=majority",
   { useNewUrlParser: true, useUnifiedTopology: true }
